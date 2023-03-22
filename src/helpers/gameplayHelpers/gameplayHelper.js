@@ -1,4 +1,6 @@
 import $ from 'jquery';
+import { CONSTANTS } from '../Constants';
+import battleship from '../../media/ships/battleship.png';
 
 const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
@@ -52,4 +54,21 @@ export const getMission = ({ setMission }) => {
     getRandomCell()?.then(data => {
         setMission({ targetCell: data.chosenCellCoordinates })
     });
+}
+
+export const getCell = (x, y) => {
+    const rowI = y; // 1 2 3 4 etc...
+    const cellX = alphabet.indexOf(x); // A B C D etc...
+    const chosenCell = $(`#row${rowI} `).find(`#mapCell${cellX} `).first();
+    const chosenCellColour = $(`#row${rowI} `).find(`#mapCell${cellX} `).first().attr('value');
+    return { chosenCell, chosenCellColour };
+}
+
+export const placeBoat = ({ ship, x, y }) => {
+    const chosenCell = getCell(x, y);
+    if (chosenCell.chosenCellColour === CONSTANTS.green) {
+        return { status: CONSTANTS.error, message: 'land tile' }
+    } else {
+        chosenCell.chosenCell.append(`<img id="shipInCell" src=${battleship} />`)
+    }
 }

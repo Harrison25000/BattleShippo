@@ -46,6 +46,16 @@ th {
     margin-left: 5%
 }
 
+#shipInCell {
+    max-width: 20px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
+}
+
 
 @keyframes pulse {
     0% {
