@@ -1,3 +1,12 @@
+.Flex-Row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
 .GamepageFlex {
     display: flex;
     flex-direction: row;
@@ -22,8 +31,8 @@ tr {
 }
 
 th {
-    width: 23px;
-    height: 23px;
+    min-width: 25px;
+    height: 25px;
     border: thin solid black;
     margin: 0;
     padding: 0;
@@ -39,15 +48,28 @@ th {
 }
 
 .InfoSection {
+    margin-left: 5%;
+    margin-right: 5%;
     width: 40%;
+    background: lightgrey;
+    padding: 2%;
 }
 
-#missionTargetText {
-    margin-left: 5%
+.MissionTargetDiv {
+    background: rgb(133, 136, 103);
+    padding: 2%;
+    border: 3px solid black;
+    height: 50px;
 }
+
+#targetImage {
+    height: 100%;
+}
+
+#missionTargetText:hover {}
 
 #shipInCell {
-    max-width: 20px;
+    max-width: 100%;
     align-items: center;
     display: flex;
     flex-direction: row;

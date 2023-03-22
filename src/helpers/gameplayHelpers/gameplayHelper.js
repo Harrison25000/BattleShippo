@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { CONSTANTS } from '../Constants';
 import battleship from '../../media/ships/battleship.png';
 
-const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
+export const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
 const landSea = ["lightblue", "green"];
 
@@ -69,6 +69,8 @@ export const placeBoat = ({ ship, x, y }) => {
     if (chosenCell.chosenCellColour === CONSTANTS.green) {
         return { status: CONSTANTS.error, message: 'land tile' }
     } else {
+        chosenCell.chosenCell.css("border", "solid yellow")
         chosenCell.chosenCell.append(`<img id="shipInCell" src=${battleship} />`)
+        return { status: CONSTANTS.success, message: 'placed boat' }
     }
 }

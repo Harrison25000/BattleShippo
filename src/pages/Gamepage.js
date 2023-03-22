@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Ships } from '../components/Ships';
 import '../css/Gamepage.css';
-import { CONSTANTS } from '../helpers/Constants';
 import { getMission, setupMap, getCell, placeBoat } from '../helpers/gameplayHelpers/gameplayHelper';
+import target from '../media/Target.png';
+import { Fire } from '../components/Fire';
 
 function Gamepage() {
 
@@ -12,7 +13,6 @@ function Gamepage() {
     useEffect(() => {
         setupMap();
         getMission({ setMission });
-        placeBoat({ ship: CONSTANTS.battleship, x: "A", y: 6 });
     }, [])
 
     return (
@@ -25,8 +25,13 @@ function Gamepage() {
                     </table>
                 </div>
                 <div className="InfoSection">
-                    {mission.targetCell && (<h3 id="missionTargetText">Mission Target: {mission.targetCell}</h3>)}
+                    {mission.targetCell && (
+                        <div className='Flex-Row MissionTargetDiv'>
+                            <h3 id="missionTargetText">Mission Target: {mission.targetCell}</h3>
+                            <img src={target} alt="target" title="target" id="targetImage" />
+                        </div>)}
                     <Ships ships={ships} setShips={setShips} />
+                    <Fire />
                 </div>
             </div>
         </div>
