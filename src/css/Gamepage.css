@@ -1,0 +1,65 @@
+.GamepageFlex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+table {
+    border-collapse: collapse !important;
+    border: none !important;
+    border-spacing: 0 !important;
+    border-collapse: separate !important;
+    padding-left: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+tr {
+    border: none !important;
+}
+
+th {
+    width: 23px;
+    height: 23px;
+    border: thin solid black;
+    margin: 0;
+    padding: 0;
+    cursor: crosshair;
+}
+
+.MissionCell {
+    color: red;
+    font-size: 12px;
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+    transform: scale(1);
+    animation: pulse 2s infinite;
+}
+
+.InfoSection {
+    width: 40%;
+}
+
+#missionTargetText {
+    margin-left: 5%
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}

@@ -1,0 +1,31 @@
+.Homepage {
+    display: block;
+    margin: auto;
+    text-align: center;
+    width: 50%;
+}
+
+.PlayNowDiv {
+    background: green;
+    padding: 10px;
+    border-top: 5px solid black;
+    cursor: pointer;
+    background-position: center;
+    background-size: 196px;
+    background-repeat: no-repeat;
+}
+
+.PlayNowDiv:hover {
+    font-size: 40px;
+    background-size: 396px;
+    background-image: url('../media/CartoonExplosion.png');
+}
+
+#playNowText {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}

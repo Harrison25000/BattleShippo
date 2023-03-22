@@ -1,0 +1,22 @@
+.Popup {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: visible;
+    opacity: 1;
+}
+
+.SubPopup {
+    width: 40%;
+    display: block;
+    margin: 10% auto;
+    background-color: lightgrey;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 2%;
+}
