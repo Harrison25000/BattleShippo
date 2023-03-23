@@ -4,15 +4,18 @@ import '../css/Gamepage.css';
 import { getMission, setupMap, getCell, placeBoat } from '../helpers/gameplayHelpers/gameplayHelper';
 import target from '../media/Target.png';
 import { Fire } from '../components/Fire';
+import { FirstTurnPlaceShips } from '../components/FirstTurnPlaceShips';
 
 function Gamepage() {
 
     const [mission, setMission] = useState({});
+    const [turnCount, setTurnCount] = useState(0);
     const [ships, setShips] = useState({ battleship: 1, aircraftCarrier: 1, ferry: 1, rib: 1, submarine: 1, cargoShip: 1 });
 
     useEffect(() => {
         setupMap();
         getMission({ setMission });
+
     }, [])
 
     return (
@@ -30,6 +33,9 @@ function Gamepage() {
                             <h3 id="missionTargetText">Mission Target: {mission.targetCell}</h3>
                             <img src={target} alt="target" title="target" id="targetImage" />
                         </div>)}
+                    {turnCount === 0 && (
+                        <FirstTurnPlaceShips ships={ships} />
+                    )}
                     <Ships ships={ships} setShips={setShips} />
                     <Fire />
                 </div>

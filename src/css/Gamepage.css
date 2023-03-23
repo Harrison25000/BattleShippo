@@ -69,13 +69,18 @@ th {
 #missionTargetText:hover {}
 
 #shipInCell {
-    max-width: 100%;
+    height: 23px;
+    width: 23px;
     align-items: center;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-content: center;
     justify-content: center;
+}
+
+#alertMessage {
+    color: red;
 }
 
 

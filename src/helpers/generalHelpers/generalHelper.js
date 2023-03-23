@@ -1,0 +1,1 @@
+export const arrHasDuplicates = (arr) => arr.length !== new Set(arr).size;

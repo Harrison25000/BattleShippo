@@ -1,6 +1,11 @@
 import $ from 'jquery';
 import { CONSTANTS } from '../Constants';
 import battleship from '../../media/ships/battleship.png';
+import aircraftCarrier from '../../media/ships/aircraftCarrier.png';
+import rib from '../../media/ships/rib.png';
+import submarine from '../../media/ships/submarine.png';
+import ferry from '../../media/ships/ferry.png';
+import cargoShip from '../../media/ships/cargoShip.png';
 
 export const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
 
@@ -64,13 +69,48 @@ export const getCell = (x, y) => {
     return { chosenCell, chosenCellColour };
 }
 
-export const placeBoat = ({ ship, x, y }) => {
+export const placeShip = ({ ship, x, y }) => {
+    var shipImage = battleship
+    if (ship === CONSTANTS.aircraftCarrier) shipImage = aircraftCarrier
+    if (ship === CONSTANTS.submarine) shipImage = submarine
+    if (ship === CONSTANTS.rib) shipImage = rib
+    if (ship === CONSTANTS.ferry) shipImage = ferry
+    if (ship === CONSTANTS.cargoShip) shipImage = cargoShip
+
     const chosenCell = getCell(x, y);
     if (chosenCell.chosenCellColour === CONSTANTS.green) {
         return { status: CONSTANTS.error, message: 'land tile' }
+    } else if (chosenCell.chosenCell[0].childNodes.length === 1) {
+        return { status: CONSTANTS.error, message: 'ship here' }
     } else {
         chosenCell.chosenCell.css("border", "solid yellow")
-        chosenCell.chosenCell.append(`<img id="shipInCell" src=${battleship} />`)
+        chosenCell.chosenCell.append(`<img class="ShipInCellClass" id="shipInCell" src=${shipImage} />`)
         return { status: CONSTANTS.success, message: 'placed boat' }
     }
+}
+
+export const fillXandYSelects = () => {
+    setTimeout(() => {
+        const xAxisSelections = [...document.getElementsByClassName("xAxisSelect")];
+        const yAxisSelections = [...document.getElementsByClassName("yAxisSelect")];
+        xAxisSelections.forEach(item => {
+            for (let index = 0; index < alphabet.length; index++) {
+                item.innerHTML += (
+                    `<option value="${alphabet[index]}">${alphabet[index]}</option>`
+                )
+            }
+        })
+        yAxisSelections.forEach(item => {
+            for (let index = 1; index < 27; index++) {
+                item.innerHTML += (
+                    `<option value="${index}">${index}</option>`
+                )
+            }
+        })
+    }, 0);
+}
+
+export const removeAllShips = () => {
+    console.log(document.querySelectorAll('.ShipInCellClass'))
+    document.querySelectorAll('.ShipInCellClass').forEach(e => e.remove());
 }
