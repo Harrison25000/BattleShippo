@@ -69,7 +69,14 @@ export const getCell = (x, y) => {
     return { chosenCell, chosenCellColour };
 }
 
-export const placeShip = ({ ship, x, y }) => {
+export const placeShip = ({ turn, ship, x, y }) => {
+    if (turn === 0) {
+        console.log(x, y)
+        if ((x === "A" || x === "Z" || y === 1 || y === 26)) {
+        } else {
+            return { status: CONSTANTS.error, message: 'Not placed on edge' }
+        }
+    }
     var shipImage = battleship
     if (ship === CONSTANTS.aircraftCarrier) shipImage = aircraftCarrier
     if (ship === CONSTANTS.submarine) shipImage = submarine
@@ -84,7 +91,7 @@ export const placeShip = ({ ship, x, y }) => {
         return { status: CONSTANTS.error, message: 'ship here' }
     } else {
         chosenCell.chosenCell.css("border", "solid yellow")
-        chosenCell.chosenCell.append(`<img class="ShipInCellClass" id="shipInCell" src=${shipImage} />`)
+        chosenCell.chosenCell.append(`<img class="ShipInCellClass" id="shipInCell" value="${ship}" src=${shipImage} />`)
         return { status: CONSTANTS.success, message: 'placed boat' }
     }
 }
@@ -111,6 +118,82 @@ export const fillXandYSelects = () => {
 }
 
 export const removeAllShips = () => {
-    console.log(document.querySelectorAll('.ShipInCellClass'))
     document.querySelectorAll('.ShipInCellClass').forEach(e => e.remove());
+}
+
+export const removeAllMoveDots = () => {
+    document.querySelectorAll('.MoveDot').forEach(e => e.remove());
+}
+
+export const showMoveOptions = ({ ship, x, y }) => {
+    console.log({ ship, x, y })
+    y = parseInt(y);
+    x = alphabet.indexOf(x); // A B C D etc...
+    switch (ship) {
+        case CONSTANTS.battleship:
+            showAdjacentMovableLocations({ x, y });
+            break;
+        case CONSTANTS.submarine:
+            showAdjacentMovableLocations({ x, y });
+            break;
+        case CONSTANTS.aircraftCarrier:
+            showAdjacentMovableLocations({ x, y });
+            break;
+        case CONSTANTS.ferry:
+            showAdjacentMovableLocations({ x, y });
+            break;
+        case CONSTANTS.cargoShip:
+            showAdjacentMovableLocations({ x, y });
+            break;
+        case CONSTANTS.rib:
+            showAdjacentMovableLocations({ x, y });
+            break;
+        default:
+            break;
+    }
+}
+
+const showAdjacentMovableLocations = ({ x, y }) => {
+    const waterCells = [];
+    const rightCell = $(`#row${y}`).find(`#mapCell${x + 1}`).first();
+    if (rightCell.attr('value') !== "green" && rightCell.find('img').length === 0) {
+        rightCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(rightCell);
+    }
+    const leftCell = $(`#row${y}`).find(`#mapCell${x - 1}`).first();
+    if (leftCell.attr('value') !== "green" && leftCell.find('img').length === 0) {
+        leftCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(leftCell);
+    }
+    const aboveCell = $(`#row${y - 1}`).find(`#mapCell${x} `).first();
+    if (aboveCell.attr('value') !== "green" && !aboveCell.find('img').length === 0) {
+        aboveCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(aboveCell);
+    }
+    const aboveRightCell = $(`#row${y - 1} `).find(`#mapCell${x + 1} `).first()
+    if (aboveRightCell.attr('value') !== "green" && aboveRightCell.find('img').length === 0) {
+        aboveRightCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(aboveRightCell);
+    }
+    const aboveLeftCell = $(`#row${y - 1} `).find(`#mapCell${x - 1} `).first();
+    if (aboveLeftCell.attr('value') !== "green" && aboveLeftCell.find('img').length === 0) {
+        aboveLeftCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(aboveLeftCell);
+    }
+    const belowCell = $(`#row${y + 1} `).find(`#mapCell${x} `).first();
+    if (belowCell.attr('value') !== "green" && belowCell.find('img').length === 0) {
+        belowCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(belowCell);
+    }
+    const belowRightCell = $(`#row${y + 1} `).find(`#mapCell${x + 1} `).first();
+    if (belowRightCell.attr('value') !== "green" && belowRightCell.find('img').length === 0) {
+        belowRightCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(belowRightCell);
+    }
+    const belowLeftCell = $(`#row${y + 1} `).find(`#mapCell${x - 1} `).first();
+    if (belowLeftCell.attr('value') !== "green" && belowLeftCell.find('img').length === 0) {
+        belowLeftCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        waterCells.push(belowLeftCell);
+    }
+    return waterCells;
 }

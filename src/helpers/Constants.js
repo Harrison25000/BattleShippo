@@ -8,5 +8,6 @@ export const CONSTANTS = {
     green: 'green',
     lighblue: 'lightblue',
     error: 'error',
-    success: 'success'
+    success: 'success',
+    dotHtml: '&#11044;'
 }

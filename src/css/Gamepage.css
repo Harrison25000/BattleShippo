@@ -16,6 +16,18 @@
     align-items: flex-start;
 }
 
+.MoveDot {
+    border-radius: 10px;
+    width: 10px;
+    height: 10px;
+    font-size: 7px;
+    animation: grow 2s infinite;
+    text-align: center;
+    margin: auto;
+    color: blue;
+    cursor: pointer;
+}
+
 table {
     border-collapse: collapse !important;
     border: none !important;
@@ -98,5 +110,19 @@ th {
     100% {
         transform: scale(0.95);
         box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+}
+
+@keyframes grow {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(2);
+    }
+
+    100% {
+        transform: scale(1);
     }
 }

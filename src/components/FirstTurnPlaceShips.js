@@ -3,7 +3,7 @@ import { fillXandYSelects, placeShip, removeAllShips } from '../helpers/gameplay
 import { CONSTANTS } from '../helpers/Constants';
 import { arrHasDuplicates } from '../helpers/generalHelpers/generalHelper';
 
-export const FirstTurnPlaceShips = ({ ships }) => {
+export const FirstTurnPlaceShips = ({ ships, setTurnCount }) => {
     const [inputRows, setInputRows] = useState([]);
     const [alert, setAlert] = useState({ error: false, message: '' });
     const [placedShips, setPlacedShips] = useState(0)
@@ -93,6 +93,7 @@ export const FirstTurnPlaceShips = ({ ships }) => {
 
     const placeShipsOnBoard = (e) => {
         e.preventDefault();
+        const alertArray = [];
         removeAllShips();
         var placedShipsLocal = 0;
         const coordinateStringsArr = [];
@@ -121,16 +122,19 @@ export const FirstTurnPlaceShips = ({ ships }) => {
         for (const [key, value] of Object.entries(coordinatesObj)) {
             const placeShipCount = value.length / 2;
             for (let index = 0; index < placeShipCount; index++) {
-                const placeResponse = placeShip({ ship: CONSTANTS[key], x: value[0], y: value[1] })
+                const placeResponse = placeShip({ turn: 0, ship: CONSTANTS[key], x: value[0], y: value[1] })
                 if (placeResponse.status === CONSTANTS.error) {
-                    setAlert({
-                        error: true, message: `
-                    ${placeResponse.message}. ${CONSTANTS[key]}: ${value[0]},${value[1]}
-                     ` });
+                    alertArray.push([placeResponse.message, CONSTANTS[key], value[0], value[1]]);
                 } else {
                     placedShipsLocal++;
                 }
                 value.splice(0, 2);
+            }
+            if (alertArray.length > 0) {
+                const alertMessage = alertArray.map(item => <p>{item[0]} - {item[1]}:{item[2]}{item[3]}</p>)
+                setAlert({
+                    error: true, message: alertMessage
+                });
             }
         }
 
@@ -142,15 +146,16 @@ export const FirstTurnPlaceShips = ({ ships }) => {
         <div>
             <button onClick={() => {
                 firstTurnSelectInputs().then(fillXandYSelects())
-            }}>Place Ships</button>
+            }}>Start Game</button>
             {alert.error && (
-                <p id="alertMessage">{alert.message}</p>
+                <div id="alertMessage">{alert.message}</div>
             )}
             <form id="inputRows" onSubmit={(e) => placeShipsOnBoard(e)}>
                 {inputRows}
-                {inputRows.length > 0 && (<input type="submit" value="CONFIRM"></input>)}
+                {inputRows.length > 0 && (<input type="submit" value="Place Ships"></input>)}
             </form>
             <p>Placed Ships: {placedShips} / {totalShips}</p>
+            {placedShips === 6 && (<button id="endTurnButton" onClick={() => setTurnCount(1)}>End Turn</button>)}
         </div >
     )
 }
