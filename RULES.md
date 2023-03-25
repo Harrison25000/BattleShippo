@@ -7,7 +7,7 @@ Ships:
 - Submarine - 3M, 30p
 - Assault RIB - 5M, 10p
 - Aircraft Carrier - 2M, 40p
-- Supply Ship - 2M, 40p 
+- Cargo Ship - 2M, 40p 
  Vehicles:
 - Tank
 - Truck
