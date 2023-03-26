@@ -3,7 +3,7 @@ import { fillXandYSelects, placeShip, removeAllShips } from '../helpers/gameplay
 import { CONSTANTS } from '../helpers/Constants';
 import { arrHasDuplicates } from '../helpers/generalHelpers/generalHelper';
 
-export const FirstTurnPlaceShips = ({ ships, setTurnCount }) => {
+export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced }) => {
     const [inputRows, setInputRows] = useState([]);
     const [alert, setAlert] = useState({ error: false, message: '' });
     const [placedShips, setPlacedShips] = useState(0)
@@ -139,7 +139,9 @@ export const FirstTurnPlaceShips = ({ ships, setTurnCount }) => {
         }
 
         setPlacedShips(placedShipsLocal);
-
+        if (placedShipsLocal === 6) {
+            setFirstTurnShipsPlaced(true);
+        }
     }
 
     return (
@@ -155,7 +157,6 @@ export const FirstTurnPlaceShips = ({ ships, setTurnCount }) => {
                 {inputRows.length > 0 && (<input type="submit" value="Place Ships"></input>)}
             </form>
             <p>Placed Ships: {placedShips} / {totalShips}</p>
-            {placedShips === 6 && (<button id="endTurnButton" onClick={() => setTurnCount(1)}>End Turn</button>)}
         </div >
     )
 }

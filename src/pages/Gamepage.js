@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Ships } from '../components/Ships';
 import '../css/Gamepage.css';
-import { getMission, setupMap, getCell, placeBoat, showMoveOptions, removeAllMoveDots } from '../helpers/gameplayHelpers/gameplayHelper';
+import { getMission, setupMap, getCell, placeBoat, showMoveOptions, removeAllMoveDots, placeShip, alphabet } from '../helpers/gameplayHelpers/gameplayHelper';
 import target from '../media/Target.png';
 import { Fire } from '../components/Fire';
 import { FirstTurnPlaceShips } from '../components/FirstTurnPlaceShips';
@@ -12,6 +12,7 @@ function Gamepage() {
     const [mission, setMission] = useState({});
     const [turnCount, setTurnCount] = useState(0);
     const [ships, setShips] = useState({ battleship: 1, aircraftCarrier: 1, ferry: 1, rib: 1, submarine: 1, cargoShip: 1 });
+    const [firstTurnShipsPlaced, setFirstTurnShipsPlaced] = useState(false);
 
     $('body').off('click').on('click', "#shipInCell", function (e) {
         const ship = e.target.getAttribute('value')
@@ -21,9 +22,20 @@ function Gamepage() {
         const yAxis = coordinates.split(",")[1].trim();
         removeAllMoveDots();
         showMoveOptions({ ship, x: xAxis, y: yAxis });
-        // if (!$(event.target).closest(sel + ', .popover-body').length) {
-        //     $(sel).popover('hide');
-        // }
+    });
+
+    $('body').on('click', ".MoveDot", function (e) {
+        const ship = e.target.getAttribute('value')
+        const parentCell = e.target.parentNode;
+        const coordinates = parentCell.getAttribute("title");
+        const xAxis = coordinates.split(",")[0].trim();
+        const yAxis = coordinates.split(",")[1].trim();
+        const xAxisIndex = alphabet.indexOf(xAxis);
+        console.log({ xAxisIndex, yAxis })
+        e.target.remove();
+        placeShip({ ship, x: xAxis, y: yAxis })
+        removeAllMoveDots();
+        showMoveOptions({ ship, x: xAxis, y: yAxis });
     });
 
     useEffect(() => {
@@ -47,10 +59,11 @@ function Gamepage() {
                             <img src={target} alt="target" title="target" id="targetImage" />
                         </div>)}
                     {turnCount === 0 && (
-                        <FirstTurnPlaceShips ships={ships} setTurnCount={setTurnCount} />
+                        <FirstTurnPlaceShips ships={ships} setFirstTurnShipsPlaced={setFirstTurnShipsPlaced} />
                     )}
                     <Ships ships={ships} setShips={setShips} />
                     <Fire />
+                    {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => setTurnCount(turnCount + 1)}>End Turn</button>}
                 </div>
             </div>
         </div>

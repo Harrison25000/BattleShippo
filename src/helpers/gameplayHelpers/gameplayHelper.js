@@ -71,6 +71,7 @@ export const getCell = (x, y) => {
 
 export const placeShip = ({ turn, ship, x, y }) => {
     y = parseInt(y);
+    console.log({ turn, ship, x, y })
     if (turn === 0) {
         if ((x === "A" || x === "Z" || y === 1 || y === 26)) {
             console.log(x, y)
@@ -86,6 +87,7 @@ export const placeShip = ({ turn, ship, x, y }) => {
     if (ship === CONSTANTS.cargoShip) shipImage = cargoShip
 
     const chosenCell = getCell(x, y);
+    console.log({ chosenCell })
     if (chosenCell.chosenCellColour === CONSTANTS.green) {
         return { status: CONSTANTS.error, message: 'land tile' }
     } else if (chosenCell.chosenCell[0].childNodes.length === 1) {
@@ -135,78 +137,78 @@ export const showMoveOptions = ({ ship, x, y }) => {
     console.log(ship, hasAvailableWaterAroundCell({ x, y }));
     switch (ship) {
         case CONSTANTS.battleship:
-            returnedWaterCells = showAdjacentMovableLocations({ x, y }).filter(item => item.cell.length > 0);
+            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship }).filter(item => item.cell.length > 0);
             moveCount = CONSTANTS.battleshipMoves
             console.log({ moveCount })
             while (moveCount > 1) {
                 returnedWaterCells.forEach(item => {
                     if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
+                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
                     }
                 });
                 moveCount--;
             }
             break;
         case CONSTANTS.submarine:
-            returnedWaterCells = showAdjacentMovableLocations({ x, y });
+            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship });
             moveCount = CONSTANTS.submarineMoves
             console.log({ moveCount })
             while (moveCount > 1) {
                 returnedWaterCells.forEach(item => {
                     if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
+                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
                     }
                 });
                 moveCount--;
             }
             break;
         case CONSTANTS.aircraftCarrier:
-            returnedWaterCells = showAdjacentMovableLocations({ x, y });
+            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship });
             moveCount = CONSTANTS.aircraftCarrierMoves
             console.log({ moveCount })
             while (moveCount > 1) {
                 returnedWaterCells.forEach(item => {
                     if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
+                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
                     }
                 });
                 moveCount--;
             }
             break;
         case CONSTANTS.ferry:
-            returnedWaterCells = showAdjacentMovableLocations({ x, y });
+            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship });
             moveCount = CONSTANTS.ferryMoves
             console.log({ moveCount })
             while (moveCount > 1) {
                 returnedWaterCells.forEach(item => {
                     if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
+                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
                     }
                 });
                 moveCount--;
             }
             break;
         case CONSTANTS.cargoShip:
-            returnedWaterCells = showAdjacentMovableLocations({ x, y });
+            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship });
             moveCount = CONSTANTS.cargoShipMoves
             console.log({ moveCount })
             while (moveCount > 1) {
                 returnedWaterCells.forEach(item => {
                     if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
+                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
                     }
                 });
                 moveCount--;
             }
             break;
         case CONSTANTS.rib:
-            returnedWaterCells = showAdjacentMovableLocations({ x, y });
+            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship });
             moveCount = CONSTANTS.ribMoves
             console.log({ moveCount })
             while (moveCount > 1) {
                 returnedWaterCells.forEach(item => {
                     if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item)); console.log({ returnedWaterCells })
+                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item)); console.log({ returnedWaterCells })
                     }
                 });
                 moveCount--;
@@ -251,46 +253,46 @@ const hasAvailableWaterAroundCell = ({ x, y }) => {
     return hasSeaAdjacentCells;
 }
 
-const showAdjacentMovableLocations = ({ x, y }) => {
+const showAdjacentMovableLocations = ({ x, y, ship }) => {
     const waterCells = [];
     const rightCell = $(`#row${y}`).find(`#mapCell${x + 1}`).first();
     if (rightCell.attr('value') !== "green" && rightCell.find('img').length === 0 && rightCell.find('p').length === 0) {
-        rightCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        rightCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: rightCell, row: y, column: x + 1 });
     }
     const leftCell = $(`#row${y}`).find(`#mapCell${x - 1}`).first();
     if (leftCell.attr('value') !== "green" && leftCell.find('img').length === 0 && leftCell.find('p').length === 0) {
-        leftCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        leftCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: leftCell, row: y, column: x - 1 });
     }
     const aboveCell = $(`#row${y - 1}`).find(`#mapCell${x} `).first();
     if (aboveCell.attr('value') !== "green" && aboveCell.find('img').length === 0 && aboveCell.find('p').length === 0) {
-        aboveCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        aboveCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: aboveCell, row: y - 1, column: x });
     }
     const aboveRightCell = $(`#row${y - 1} `).find(`#mapCell${x + 1} `).first()
     if (aboveRightCell.attr('value') !== "green" && aboveRightCell.find('img').length === 0 && aboveRightCell.find('p').length === 0) {
-        aboveRightCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        aboveRightCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: aboveRightCell, row: y - 1, column: x + 1 });
     }
     const aboveLeftCell = $(`#row${y - 1} `).find(`#mapCell${x - 1} `).first();
     if (aboveLeftCell.attr('value') !== "green" && aboveLeftCell.find('img').length === 0 && aboveLeftCell.find('p').length === 0) {
-        aboveLeftCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        aboveLeftCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: aboveLeftCell, row: y - 1, column: x - 1 });
     }
     const belowCell = $(`#row${y + 1} `).find(`#mapCell${x} `).first();
     if (belowCell.attr('value') !== "green" && belowCell.find('img').length === 0 && belowCell.find('p').length === 0) {
-        belowCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        belowCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: belowCell, row: y + 1, column: x });
     }
     const belowRightCell = $(`#row${y + 1} `).find(`#mapCell${x + 1} `).first();
     if (belowRightCell.attr('value') !== "green" && belowRightCell.find('img').length === 0 && belowRightCell.find('p').length === 0) {
-        belowRightCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        belowRightCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: belowRightCell, row: y + 1, column: x + 1 });
     }
     const belowLeftCell = $(`#row${y + 1} `).find(`#mapCell${x - 1} `).first();
     if (belowLeftCell.attr('value') !== "green" && belowLeftCell.find('img').length === 0 && belowLeftCell.find('p').length === 0) {
-        belowLeftCell.append(`<p class='MoveDot'>${CONSTANTS.dotHtml}</p>`);
+        belowLeftCell.append(`<p class='MoveDot' value="${ship}">${CONSTANTS.dotHtml}</p>`);
         waterCells.push({ cell: belowLeftCell, row: y + 1, column: x - 1 });
     }
     return waterCells;
