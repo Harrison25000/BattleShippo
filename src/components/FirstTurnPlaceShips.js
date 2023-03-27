@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { fillXandYSelects, placeShip, removeAllShips } from '../helpers/gameplayHelpers/gameplayHelper';
 import { CONSTANTS } from '../helpers/Constants';
-import { arrHasDuplicates } from '../helpers/generalHelpers/generalHelper';
+import { arrHasDuplicates, randShipId } from '../helpers/generalHelpers/generalHelper';
 
-export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced }) => {
+export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced, setCustomShipsWLocation, customShipsWLocation }) => {
     const [inputRows, setInputRows] = useState([]);
     const [alert, setAlert] = useState({ error: false, message: '' });
     const [placedShips, setPlacedShips] = useState(0)
@@ -21,7 +21,6 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced }) => {
                     </select>
                     <select className="yAxisSelect" id="battleshipY">
                     </select>
-
                 </div>
             )
         }
@@ -94,6 +93,7 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced }) => {
     const placeShipsOnBoard = (e) => {
         e.preventDefault();
         const alertArray = [];
+        const customShipsArray = [];
         removeAllShips();
         var placedShipsLocal = 0;
         const coordinateStringsArr = [];
@@ -122,7 +122,9 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced }) => {
         for (const [key, value] of Object.entries(coordinatesObj)) {
             const placeShipCount = value.length / 2;
             for (let index = 0; index < placeShipCount; index++) {
-                const placeResponse = placeShip({ turn: 0, ship: CONSTANTS[key], x: value[0], y: value[1] })
+                const randId = randShipId();
+                const placeResponse = placeShip({ turn: 0, ship: CONSTANTS[key], x: value[0], y: value[1], id: randId })
+                customShipsArray.push({ ship: `${CONSTANTS[key]}${randId}`, location: `${value[0]}, ${value[1]}` })
                 if (placeResponse.status === CONSTANTS.error) {
                     alertArray.push([placeResponse.message, CONSTANTS[key], value[0], value[1]]);
                 } else {
@@ -137,6 +139,8 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced }) => {
                 });
             }
         }
+
+        setCustomShipsWLocation(customShipsArray);
 
         setPlacedShips(placedShipsLocal);
         if (placedShipsLocal === 6) {

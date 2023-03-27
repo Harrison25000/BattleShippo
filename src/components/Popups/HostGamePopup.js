@@ -1,10 +1,9 @@
 import '../../css/Popups.css';
+import { randUrl } from '../../helpers/generalHelpers/generalHelper';
 
 export const HostGamePopup = ({ setShowHostGamePopup }) => {
     const hostGame = (e) => {
-        let randUrl = "x".repeat(5)
-            .replace(/./g, c => "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[Math.floor(Math.random() * 62)]);
-        window.location.href = `game/${randUrl}`;
+        window.location.href = `game/${randUrl()}`;
         setShowHostGamePopup(false);
     }
 
