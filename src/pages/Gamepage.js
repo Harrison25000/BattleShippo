@@ -14,11 +14,13 @@ function Gamepage() {
     const [ships, setShips] = useState({ battleship: 1, aircraftCarrier: 1, ferry: 1, rib: 1, submarine: 1, cargoShip: 1 });
     const [customShipsWLocation, setCustomShipsWLocation] = useState([]);
     const [firstTurnShipsPlaced, setFirstTurnShipsPlaced] = useState(false);
-    const [countToDeduct, setCountToDeduct] = useState({ ship: '', count: 0 });
+
+    useEffect(() => {
+        console.log({ customShipsWLocation })
+    }, [setCustomShipsWLocation])
 
     $('body').off('click').on('click', "#shipInCell", function (e) {
         const ship = e.target.getAttribute('value')
-        console.log({ bodyship: ship })
         const parentCell = e.target.parentNode;
         const coordinates = parentCell.getAttribute("title");
         const xAxis = coordinates.split(",")[0].trim();
@@ -28,7 +30,9 @@ function Gamepage() {
     });
 
     $('body').on('click', ".MoveDot", function (e) {
-        const ship = e.target.getAttribute('value')
+        const shipArr = e.target.getAttribute('value').split("-");
+        const ship = shipArr[0];
+        const shipId = shipArr[1];
         const moveCount = parseInt(e.target.getAttribute('moveCount'));
         const origin = e.target.getAttribute('origin');
         const parentCell = e.target.parentNode;
@@ -37,10 +41,31 @@ function Gamepage() {
         const yAxis = coordinates.split(",")[1].trim();
         e.target.remove();
         removeShip({ x: origin.split(',')[0].trim(), y: origin.split(',')[1].trim() })
-        placeShip({ ship, x: xAxis, y: yAxis })
+        placeShip({ ship, x: xAxis, y: yAxis, id: shipId })
+        const updatedCustomShipsWLocation = updateCustomShipsWLocation({ ship: shipArr.join("-"), x: xAxis, y: yAxis, countToDeduct: moveCount });
         removeAllMoveDots();
-        showMoveOptions({ ship, x: xAxis, y: yAxis });
+        const countToDeduct = getCustomShipWLocation({ ship: shipArr.join("-"), customShipsWLocationArr: updatedCustomShipsWLocation }).moveCount
+        console.log(countToDeduct, moveCount)
+        showMoveOptions({ ship: shipArr.join("-"), x: xAxis, y: yAxis, countToDeduct: countToDeduct });
     });
+
+    const updateCustomShipsWLocation = ({ ship, x, y, countToDeduct }) => {
+        const customShipsWLocationArr = customShipsWLocation.map(obj => {
+            if (obj.ship === ship) {
+                return { ship, location: `${x}, ${y}`, moveCount: (obj.moveCount - countToDeduct) }
+            }
+            return obj
+        })
+        setCustomShipsWLocation(customShipsWLocationArr);
+        return customShipsWLocationArr;
+    }
+
+    const getCustomShipWLocation = ({ ship, customShipsWLocationArr }) => {
+        if (customShipsWLocationArr) {
+            return customShipsWLocationArr.filter(obj => obj.ship === ship)[0];
+        }
+        return customShipsWLocation.filter(obj => obj.ship === ship)[0];
+    }
 
     useEffect(() => {
         setupMap();
@@ -65,7 +90,6 @@ function Gamepage() {
                     {turnCount === 0 && (
                         <FirstTurnPlaceShips ships={ships} setFirstTurnShipsPlaced={setFirstTurnShipsPlaced} setCustomShipsWLocation={setCustomShipsWLocation} customShipsWLocation={customShipsWLocation} />
                     )}
-                    {console.log(customShipsWLocation)}
                     <Ships ships={ships} setShips={setShips} />
                     <Fire />
                     {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => setTurnCount(turnCount + 1)}>End Turn</button>}

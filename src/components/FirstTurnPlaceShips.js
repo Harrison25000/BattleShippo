@@ -124,7 +124,7 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced, setCustomS
             for (let index = 0; index < placeShipCount; index++) {
                 const randId = randShipId();
                 const placeResponse = placeShip({ turn: 0, ship: CONSTANTS[key], x: value[0], y: value[1], id: randId })
-                customShipsArray.push({ ship: `${CONSTANTS[key]}${randId}`, location: `${value[0]}, ${value[1]}` })
+                customShipsArray.push({ ship: `${CONSTANTS[key]}-${randId}`, location: `${value[0]}, ${value[1]}`, moveCount: CONSTANTS[`${key}Moves`] })
                 if (placeResponse.status === CONSTANTS.error) {
                     alertArray.push([placeResponse.message, CONSTANTS[key], value[0], value[1]]);
                 } else {

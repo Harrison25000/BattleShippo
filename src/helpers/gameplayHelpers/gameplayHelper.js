@@ -130,96 +130,63 @@ export const removeAllMoveDots = () => {
     document.querySelectorAll('.MoveDot').forEach(e => e.remove());
 }
 
-export const showMoveOptions = ({ ship, x, y }) => {
-    console.log(ship);
+const repeatShowAdjacentMovableLocationsFunc = ({ moveCount, ship, shipId, countToDeduct, x, y, origin }) => {
+    var n = 1;
+    var returnedWaterCells = [];
+    if (n <= countToDeduct) {
+        returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
+    }
+    while (moveCount > 1 && n < countToDeduct) {
+        console.log({ moveCount, countToDeduct, n })
+        n++;
+        returnedWaterCells.forEach(item => {
+            if (item.cell.length > 0) {
+                showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
+            }
+        });
+        moveCount--;
+    }
+}
+
+export const showMoveOptions = ({ ship, x, y, countToDeduct }) => {
+    if (countToDeduct <= 0) return;
     const customShip = ship.split("-");
     ship = customShip[0];
     const shipId = customShip[1];
-    console.log({ shipId })
     const origin = `${x}, ${y}`;
     y = parseInt(y);
     x = alphabet.indexOf(x); // A B C D etc...
     var moveCount = 0;
-    var n = 1;
-    var returnedWaterCells = []
     switch (ship) {
         case CONSTANTS.battleship:
             moveCount = CONSTANTS.battleshipMoves
-            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
-            while (moveCount > 1) {
-                n++;
-                returnedWaterCells.forEach(item => {
-                    if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
-                    }
-                });
-                moveCount--;
-            }
+            countToDeduct = countToDeduct || moveCount;
+            repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
         case CONSTANTS.submarine:
             moveCount = CONSTANTS.submarineMoves
-            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
-            while (moveCount > 1) {
-                n++;
-                returnedWaterCells.forEach(item => {
-                    if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
-                    }
-                });
-                moveCount--;
-            }
+            countToDeduct = countToDeduct || moveCount;
+            repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
         case CONSTANTS.aircraftCarrier:
             moveCount = CONSTANTS.aircraftCarrierMoves;
-            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
-            while (moveCount > 1) {
-                n++;
-                returnedWaterCells.forEach(item => {
-                    if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
-                    }
-                });
-                moveCount--;
-            }
+            countToDeduct = countToDeduct || moveCount;
+            repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
         case CONSTANTS.ferry:
             moveCount = CONSTANTS.ferryMoves;
-            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
-            while (moveCount > 1) {
-                n++;
-                returnedWaterCells.forEach(item => {
-                    if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
-                    }
-                });
-                moveCount--;
-            }
+            countToDeduct = countToDeduct || moveCount;
+            repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
         case CONSTANTS.cargoShip:
             moveCount = CONSTANTS.cargoShipMoves;
-            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
-            while (moveCount > 1) {
-                n++;
-                returnedWaterCells.forEach(item => {
-                    if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
-                    }
-                });
-                moveCount--;
-            }
+            countToDeduct = countToDeduct || moveCount;
+            repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
         case CONSTANTS.rib:
             moveCount = CONSTANTS.ribMoves;
-            returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
-            while (moveCount > 1) {
-                n++;
-                returnedWaterCells.forEach(item => {
-                    if (item.cell.length > 0) {
-                        showAdjacentMovableLocations({ x: item.column, y: item.row, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0).forEach(item => returnedWaterCells.push(item));
-                    }
-                });
-                moveCount--;
-            }
+            countToDeduct = countToDeduct || moveCount;
+            repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
         default:
             break;
@@ -261,7 +228,6 @@ const hasAvailableWaterAroundCell = ({ x, y }) => {
 }
 
 const showAdjacentMovableLocations = ({ x, y, ship, moveCount, origin }) => {
-    console.log({ ship })
     const waterCells = [];
     const rightCell = $(`#row${y}`).find(`#mapCell${x + 1}`).first();
     const htmlToAppend = `<p class='MoveDot' origin="${origin}" moveCount="${moveCount}" value="${ship}">${CONSTANTS.dotHtml}</p>`
