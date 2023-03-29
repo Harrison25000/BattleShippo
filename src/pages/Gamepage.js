@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Ships } from '../components/Ships';
 import '../css/Gamepage.css';
-import { getMission, setupMap, getCell, placeBoat, showMoveOptions, removeAllMoveDots, placeShip, alphabet, removeShip } from '../helpers/gameplayHelpers/gameplayHelper';
+import { getMission, setupMap, getCell, placeBoat, showMoveOptions, removeAllMoveDots, placeShip, alphabet, removeShip, endTurn } from '../helpers/gameplayHelpers/gameplayHelper';
 import target from '../media/Target.png';
 import { Fire } from '../components/Fire';
 import { FirstTurnPlaceShips } from '../components/FirstTurnPlaceShips';
@@ -17,7 +17,7 @@ function Gamepage() {
 
     useEffect(() => {
         console.log({ customShipsWLocation })
-    }, [setCustomShipsWLocation])
+    }, [customShipsWLocation])
 
     $('body').off('click').on('click', "#shipInCell", function (e) {
         const ship = e.target.getAttribute('value')
@@ -26,10 +26,11 @@ function Gamepage() {
         const xAxis = coordinates.split(",")[0].trim();
         const yAxis = coordinates.split(",")[1].trim();
         removeAllMoveDots();
-        showMoveOptions({ ship, x: xAxis, y: yAxis, });
+        const countToDeduct = getCustomShipWLocation({ ship: ship }).moveCount
+        showMoveOptions({ ship, x: xAxis, y: yAxis, countToDeduct });
     });
 
-    $('body').on('click', ".MoveDot", function (e) {
+    $('body').on('click', ".MoveDot", async function (e) {
         const shipArr = e.target.getAttribute('value').split("-");
         const ship = shipArr[0];
         const shipId = shipArr[1];
@@ -39,24 +40,26 @@ function Gamepage() {
         const coordinates = parentCell.getAttribute("title");
         const xAxis = coordinates.split(",")[0].trim();
         const yAxis = coordinates.split(",")[1].trim();
+        var countToDeduct = 0;
         e.target.remove();
         removeShip({ x: origin.split(',')[0].trim(), y: origin.split(',')[1].trim() })
         placeShip({ ship, x: xAxis, y: yAxis, id: shipId })
-        const updatedCustomShipsWLocation = updateCustomShipsWLocation({ ship: shipArr.join("-"), x: xAxis, y: yAxis, countToDeduct: moveCount });
+        await updateCustomShipsWLocation({ ship: shipArr.join("-"), x: xAxis, y: yAxis, countToDeduct: moveCount }).then(updatedCustomShipsWLocation => {
+            setCustomShipsWLocation(updatedCustomShipsWLocation);
+            countToDeduct = getCustomShipWLocation({ ship: shipArr.join("-"), customShipsWLocationArr: updatedCustomShipsWLocation }).moveCount
+        })
         removeAllMoveDots();
-        const countToDeduct = getCustomShipWLocation({ ship: shipArr.join("-"), customShipsWLocationArr: updatedCustomShipsWLocation }).moveCount
-        console.log(countToDeduct, moveCount)
         showMoveOptions({ ship: shipArr.join("-"), x: xAxis, y: yAxis, countToDeduct: countToDeduct });
     });
 
-    const updateCustomShipsWLocation = ({ ship, x, y, countToDeduct }) => {
+    const updateCustomShipsWLocation = async ({ ship, x, y, countToDeduct }) => {
+        console.log(customShipsWLocation)
         const customShipsWLocationArr = customShipsWLocation.map(obj => {
             if (obj.ship === ship) {
                 return { ship, location: `${x}, ${y}`, moveCount: (obj.moveCount - countToDeduct) }
             }
             return obj
         })
-        setCustomShipsWLocation(customShipsWLocationArr);
         return customShipsWLocationArr;
     }
 
@@ -86,13 +89,15 @@ function Gamepage() {
                         <div className='Flex-Row MissionTargetDiv'>
                             <h3 id="missionTargetText">Mission Target: {mission.targetCell}</h3>
                             <img src={target} alt="target" title="target" id="targetImage" />
-                        </div>)}
+                        </div>)
+                    }
+                    <h5>Turn: {turnCount}</h5>
                     {turnCount === 0 && (
                         <FirstTurnPlaceShips ships={ships} setFirstTurnShipsPlaced={setFirstTurnShipsPlaced} setCustomShipsWLocation={setCustomShipsWLocation} customShipsWLocation={customShipsWLocation} />
                     )}
                     <Ships ships={ships} setShips={setShips} />
                     <Fire />
-                    {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => setTurnCount(turnCount + 1)}>End Turn</button>}
+                    {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => endTurn(turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation)}>End Turn</button>}
                 </div>
             </div>
         </div>

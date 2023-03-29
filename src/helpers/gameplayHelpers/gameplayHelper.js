@@ -137,7 +137,6 @@ const repeatShowAdjacentMovableLocationsFunc = ({ moveCount, ship, shipId, count
         returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
     }
     while (moveCount > 1 && n < countToDeduct) {
-        console.log({ moveCount, countToDeduct, n })
         n++;
         returnedWaterCells.forEach(item => {
             if (item.cell.length > 0) {
@@ -272,4 +271,14 @@ const showAdjacentMovableLocations = ({ x, y, ship, moveCount, origin }) => {
         waterCells.push({ cell: belowLeftCell, row: y + 1, column: x - 1 });
     }
     return waterCells;
+}
+
+export const endTurn = (turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation) => {
+    setTurnCount(turnCount + 1);
+    removeAllMoveDots();
+    setCustomShipsWLocation(customShipsWLocation.map(obj => {
+        const shipKey = obj.ship.split("-")[0];
+        obj.moveCount = CONSTANTS[`${shipKey}Moves`];
+        return obj;
+    }));
 }
