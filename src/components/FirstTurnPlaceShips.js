@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { fillXandYSelects, placeShip, removeAllShips } from '../helpers/gameplayHelpers/gameplayHelper';
 import { CONSTANTS } from '../helpers/Constants';
 import { arrHasDuplicates, randShipId } from '../helpers/generalHelpers/generalHelper';
 
-export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced, setCustomShipsWLocation, customShipsWLocation }) => {
+export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced, setCustomShipsWLocation, customShipsWLocation, setConnected, connected, setPlayerCount, playerCount }) => {
     const [inputRows, setInputRows] = useState([]);
     const [alert, setAlert] = useState({ error: false, message: '' });
     const [placedShips, setPlacedShips] = useState(0)
 
     const totalShips = Object.values(ships).reduce((acc, current) => acc + current, 0);
+
+    useEffect(() => {
+        firstTurnSelectInputs().then(fillXandYSelects())
+    }, []);
 
     const firstTurnSelectInputs = async () => {
         const boatArr = [];
@@ -150,9 +154,6 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced, setCustomS
 
     return (
         <div>
-            <button onClick={() => {
-                firstTurnSelectInputs().then(fillXandYSelects())
-            }}>Start Game</button>
             {alert.error && (
                 <div id="alertMessage">{alert.message}</div>
             )}
@@ -160,7 +161,7 @@ export const FirstTurnPlaceShips = ({ ships, setFirstTurnShipsPlaced, setCustomS
                 {inputRows}
                 {inputRows.length > 0 && (<input type="submit" value="Place Ships"></input>)}
             </form>
-            <p>Placed Ships: {placedShips} / {totalShips}</p>
+            {connected && <p>Placed Ships: {placedShips} / {totalShips}</p>}
         </div >
     )
 }

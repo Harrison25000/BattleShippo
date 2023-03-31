@@ -1,17 +1,17 @@
-import battleShip from '../media/ships/battleship.png';
-import aircraftCarrier from '../media/ships/aircraftCarrier.png';
-import rib from '../media/ships/rib.png';
-import submarine from '../media/ships/submarine.png';
-import ferry from '../media/ships/ferry.png';
-import cargoShip from '../media/ships/cargoShip.png';
-import '../css/Ships.css';
-import { useState } from 'react';
+import battleShip from '../../media/ships/battleship.png';
+import aircraftCarrier from '../../media/ships/aircraftCarrier.png';
+import rib from '../../media/ships/rib.png';
+import submarine from '../../media/ships/submarine.png';
+import ferry from '../../media/ships/ferry.png';
+import cargoShip from '../../media/ships/cargoShip.png';
+import '../../css/Ships.css';
+import '../../css/Popups.css';
+import $ from 'jquery';
 
-export const Ships = ({ ships, setShips }) => {
-
-    const [showShipInfo, setShowShipInfo] = useState(false);
+export const Ships = ({ ships, setShowShipInfo }) => {
 
     const renderBoatsOnSide = () => {
+        $("#startGameButton").css('display', 'none');
         const boatArr = [
             <div className='SidelineShipInfo'>
                 <div className="SideShip" alt="empty" />
@@ -84,13 +84,18 @@ export const Ships = ({ ships, setShips }) => {
     }
 
     return (
-        <div className="ShipContainer">
-            <button onClick={() => setShowShipInfo(!showShipInfo)}>Ship Information</button>
-            {showShipInfo && (
-                <div className="ShipInformation">
-                    {renderBoatsOnSide()}
+        <div className='Popup'>
+            <div className="SubPopup">
+                <div className="ShipContainer">
+                    <div className="ShipInformation">
+                        {renderBoatsOnSide()}
+                        <button className='CloseButton' onClick={() => {
+                            setShowShipInfo(false)
+                            $("#startGameButton").css('display', 'block');
+                        }}>Close</button>
+                    </div>
                 </div>
-            )}
+            </div>
         </div>
     )
 }

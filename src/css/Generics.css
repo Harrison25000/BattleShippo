@@ -1,0 +1,29 @@
+.Flex {
+    display: flex
+}
+
+.Flex-Row-Edges {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-content: center;
+}
+
+.CloseButton {
+    position: relative;
+    display: block;
+    margin: auto;
+    padding: 5px 10px;
+    background: indianred;
+    font-weight: 900;
+    border: solid black;
+    cursor: pointer;
+}
+
+.CloseButton:hover {
+    background: rgb(215, 102, 102);
+    border: solid black;
+    cursor: pointer;
+}

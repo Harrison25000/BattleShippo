@@ -193,6 +193,9 @@ export const showMoveOptions = ({ ship, x, y, countToDeduct }) => {
 }
 
 const hasAvailableWaterAroundCell = ({ x, y }) => {
+    if (typeof x === "string") {
+        x = alphabet.indexOf(x);
+    }
     const chosenCell = $(`#row${y} `).find(`#mapCell${x} `).first();
     const chosenCellCoordinates = `${alphabet[x]},${y}`;
     const chosenCellColour = $(`#row${y} `).find(`#mapCell${x} `).first().attr('value');
@@ -227,6 +230,9 @@ const hasAvailableWaterAroundCell = ({ x, y }) => {
 }
 
 const showAdjacentMovableLocations = ({ x, y, ship, moveCount, origin }) => {
+    if (typeof x === "string") {
+        x = alphabet.indexOf(x);
+    }
     const waterCells = [];
     const rightCell = $(`#row${y}`).find(`#mapCell${x + 1}`).first();
     const htmlToAppend = `<p class='MoveDot' origin="${origin}" moveCount="${moveCount}" value="${ship}">${CONSTANTS.dotHtml}</p>`
@@ -273,12 +279,44 @@ const showAdjacentMovableLocations = ({ x, y, ship, moveCount, origin }) => {
     return waterCells;
 }
 
-export const endTurn = (turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation) => {
+const getAdjacentCells = ({ x, y }) => {
+    if (typeof x === "string") {
+        x = alphabet.indexOf(x);
+    }
+    const chosenCell = $(`#row${y} `).find(`#mapCell${x} `).first();
+    const chosenCellCoordinates = `${alphabet[x]},${y}`;
+    const chosenCellColour = $(`#row${y} `).find(`#mapCell${x} `).first().attr('value');
+    const rightCell = $(`#row${y} `).find(`#mapCell${x + 1} `).first()
+    const leftCell = $(`#row${y} `).find(`#mapCell${x - 1} `).first();
+    const aboveCell = $(`#row${y - 1} `).find(`#mapCell${x} `).first();
+    const aboveRightCell = $(`#row${y - 1} `).find(`#mapCell${x + 1} `).first();
+    const aboveLeftCell = $(`#row${y - 1} `).find(`#mapCell${x - 1} `).first();
+    const belowCell = $(`#row${y + 1} `).find(`#mapCell${x} `).first();
+    const belowRightCell = $(`#row${y + 1} `).find(`#mapCell${x + 1} `).first();
+    const belowLeftCell = $(`#row${y + 1} `).find(`#mapCell${x - 1} `).first();
+    return { rightCell, leftCell, aboveCell, aboveRightCell, aboveLeftCell, belowCell, belowRightCell, belowLeftCell };
+}
+
+export const endTurn = ({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission }) => {
     setTurnCount(turnCount + 1);
     removeAllMoveDots();
+    console.log({ mission })
+    if (mission.targetCell) {
+        const targetCell = mission.targetCell.split(",");
+        console.log({ targetCell })
+        const surroundingCells = getAdjacentCells({ x: targetCell[0], y: targetCell[1] });
+        console.log({ surroundingCells })
+        Object.values(surroundingCells).filter(item => item.length > 0).forEach(item => {
+            console.log({ item });
+            console.log(item[0].getElementsByTagName('img'))
+            console.log(item[0].target)
+        });
+    }
     setCustomShipsWLocation(customShipsWLocation.map(obj => {
         const shipKey = obj.ship.split("-")[0];
         obj.moveCount = CONSTANTS[`${shipKey}Moves`];
         return obj;
     }));
+    setFireLocations([]);
+    setShowFireOptions(true);
 }

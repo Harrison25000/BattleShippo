@@ -1,3 +1,7 @@
+body {
+    background-image: url('../media/OSMapBackground.png');
+}
+
 .Flex-Row {
     display: flex;
     flex-direction: row;
@@ -21,11 +25,16 @@
     width: 10px;
     height: 10px;
     font-size: 7px;
-    animation: grow 2s infinite;
+    animation: dotGrow 2s infinite;
     text-align: center;
     margin: auto;
     color: blue;
     cursor: pointer;
+}
+
+.Map {
+    background: grey;
+    color: white;
 }
 
 table {
@@ -62,9 +71,11 @@ th {
 .InfoSection {
     margin-left: 5%;
     margin-right: 5%;
-    width: 40%;
+    max-width: 40%;
+    min-width: 25%;
     background: lightgrey;
     padding: 2%;
+    border: 5px solid darkgreen;
 }
 
 .MissionTargetDiv {
@@ -79,6 +90,24 @@ th {
 }
 
 #missionTargetText:hover {}
+
+#resetMapButton {
+    font-weight: 900;
+    padding: 5px;
+    color: black;
+    background: rgb(205, 92, 92);
+    cursor: pointer;
+}
+
+#startGameButton {
+    font-weight: 900;
+    padding: 5px;
+    color: black;
+    background: gold;
+    cursor: pointer;
+    transform: scale(1);
+    animation: smallGrow 2s infinite;
+}
 
 #shipInCell {
     height: 23px;
@@ -113,13 +142,27 @@ th {
     }
 }
 
-@keyframes grow {
+@keyframes dotGrow {
     0% {
         transform: scale(1);
     }
 
     50% {
         transform: scale(2);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes smallGrow {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
     }
 
     100% {

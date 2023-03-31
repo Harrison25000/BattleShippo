@@ -17,19 +17,21 @@ export const HostGamePopup = ({ setShowHostGamePopup }) => {
                         <option value="2" >2</option>
                         <option value="3" >3</option>
                         <option value="4" >4</option>
-                    </select>
+                    </select><br />
                     <label for="numOfMissiles" >Number of missiles per turn per player:</label>
                     <select id="numOfMissiles">
                         <option value="1" >1</option>
                         <option value="2" >2</option>
                         <option value="3" >3</option>
                         <option value="4" >4</option>
-                    </select>
-                    <input type="submit" value="Host" />
+                    </select><br />
+                    <div >
+                        <input type="submit" value="Host" />
+                        <button className="Flex" onClick={() => {
+                            setShowHostGamePopup(false);
+                        }}>Close</button>
+                    </div>
                 </form>
-                <button onClick={() => {
-                    setShowHostGamePopup(false);
-                }}>Close</button>
             </div>
         </div>
     )
