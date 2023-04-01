@@ -78,11 +78,11 @@ export const placeShip = ({ turn, ship, x, y, id }) => {
         }
     }
     var shipImage = battleship
-    if (ship === CONSTANTS.aircraftCarrier) shipImage = aircraftCarrier
-    if (ship === CONSTANTS.submarine) shipImage = submarine
-    if (ship === CONSTANTS.rib) shipImage = rib
-    if (ship === CONSTANTS.ferry) shipImage = ferry
-    if (ship === CONSTANTS.cargoShip) shipImage = cargoShip
+    if (ship === CONSTANTS.aircraftCarrier.name) shipImage = aircraftCarrier
+    if (ship === CONSTANTS.submarine.name) shipImage = submarine
+    if (ship === CONSTANTS.rib.name) shipImage = rib
+    if (ship === CONSTANTS.ferry.name) shipImage = ferry
+    if (ship === CONSTANTS.cargoShip.name) shipImage = cargoShip
 
     const chosenCell = getCell(x, y);
     if (chosenCell.chosenCellColour === CONSTANTS.green) {
@@ -133,6 +133,7 @@ export const removeAllMoveDots = () => {
 const repeatShowAdjacentMovableLocationsFunc = ({ moveCount, ship, shipId, countToDeduct, x, y, origin }) => {
     var n = 1;
     var returnedWaterCells = [];
+    console.log({ ship, countToDeduct, moveCount })
     if (n <= countToDeduct) {
         returnedWaterCells = showAdjacentMovableLocations({ x, y, ship: `${ship}-${shipId}`, moveCount: n, origin }).filter(item => item.cell.length > 0);
     }
@@ -156,34 +157,35 @@ export const showMoveOptions = ({ ship, x, y, countToDeduct }) => {
     y = parseInt(y);
     x = alphabet.indexOf(x); // A B C D etc...
     var moveCount = 0;
+    console.log({ ship, countToDeduct })
     switch (ship) {
-        case CONSTANTS.battleship:
-            moveCount = CONSTANTS.battleshipMoves
+        case CONSTANTS.battleship.name:
+            moveCount = CONSTANTS.battleship.moves
             countToDeduct = countToDeduct || moveCount;
             repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
-        case CONSTANTS.submarine:
-            moveCount = CONSTANTS.submarineMoves
+        case CONSTANTS.submarine.name:
+            moveCount = CONSTANTS.submarine.moves
             countToDeduct = countToDeduct || moveCount;
             repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
-        case CONSTANTS.aircraftCarrier:
-            moveCount = CONSTANTS.aircraftCarrierMoves;
+        case CONSTANTS.aircraftCarrier.name:
+            moveCount = CONSTANTS.aircraftCarrier.moves;
             countToDeduct = countToDeduct || moveCount;
             repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
-        case CONSTANTS.ferry:
-            moveCount = CONSTANTS.ferryMoves;
+        case CONSTANTS.ferry.name:
+            moveCount = CONSTANTS.ferry.moves;
             countToDeduct = countToDeduct || moveCount;
             repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
-        case CONSTANTS.cargoShip:
-            moveCount = CONSTANTS.cargoShipMoves;
+        case CONSTANTS.cargoShip.name:
+            moveCount = CONSTANTS.cargoShip.moves;
             countToDeduct = countToDeduct || moveCount;
             repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
-        case CONSTANTS.rib:
-            moveCount = CONSTANTS.ribMoves;
+        case CONSTANTS.rib.name:
+            moveCount = CONSTANTS.rib.moves;
             countToDeduct = countToDeduct || moveCount;
             repeatShowAdjacentMovableLocationsFunc({ moveCount, ship, shipId, countToDeduct, x, y, origin });
             break;
@@ -283,40 +285,53 @@ const getAdjacentCells = ({ x, y }) => {
     if (typeof x === "string") {
         x = alphabet.indexOf(x);
     }
-    const chosenCell = $(`#row${y} `).find(`#mapCell${x} `).first();
+    y = parseInt(y);
+    const chosenCell = $(`#row${y}`).find(`#mapCell${x} `).first();
     const chosenCellCoordinates = `${alphabet[x]},${y}`;
-    const chosenCellColour = $(`#row${y} `).find(`#mapCell${x} `).first().attr('value');
-    const rightCell = $(`#row${y} `).find(`#mapCell${x + 1} `).first()
-    const leftCell = $(`#row${y} `).find(`#mapCell${x - 1} `).first();
-    const aboveCell = $(`#row${y - 1} `).find(`#mapCell${x} `).first();
-    const aboveRightCell = $(`#row${y - 1} `).find(`#mapCell${x + 1} `).first();
-    const aboveLeftCell = $(`#row${y - 1} `).find(`#mapCell${x - 1} `).first();
-    const belowCell = $(`#row${y + 1} `).find(`#mapCell${x} `).first();
-    const belowRightCell = $(`#row${y + 1} `).find(`#mapCell${x + 1} `).first();
-    const belowLeftCell = $(`#row${y + 1} `).find(`#mapCell${x - 1} `).first();
+    const chosenCellColour = $(`#row${y}`).find(`#mapCell${x}`).first().attr('value');
+    const rightCell = $(`#row${y}`).find(`#mapCell${x + 1}`).first()
+    const leftCell = $(`#row${y}`).find(`#mapCell${x - 1}`).first();
+    const aboveCell = $(`#row${y - 1}`).find(`#mapCell${x}`).first();
+    const aboveRightCell = $(`#row${y - 1}`).find(`#mapCell${x + 1}`).first();
+    const aboveLeftCell = $(`#row${y - 1}`).find(`#mapCell${x - 1}`).first();
+    const belowCell = $(`#row${y + 1}`).find(`#mapCell${x}`).first();
+    const belowRightCell = $(`#row${y + 1}`).find(`#mapCell${x + 1}`).first();
+    const belowLeftCell = $(`#row${y + 1}`).find(`#mapCell${x - 1}`).first();
     return { rightCell, leftCell, aboveCell, aboveRightCell, aboveLeftCell, belowCell, belowRightCell, belowLeftCell };
 }
 
-export const endTurn = ({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission }) => {
+export const endTurn = ({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points }) => {
     setTurnCount(turnCount + 1);
     removeAllMoveDots();
-    console.log({ mission })
     if (mission.targetCell) {
         const targetCell = mission.targetCell.split(",");
-        console.log({ targetCell })
         const surroundingCells = getAdjacentCells({ x: targetCell[0], y: targetCell[1] });
-        console.log({ surroundingCells })
         Object.values(surroundingCells).filter(item => item.length > 0).forEach(item => {
-            console.log({ item });
-            console.log(item[0].getElementsByTagName('img'))
-            console.log(item[0].target)
+            var shipInCell = item[0].getElementsByTagName('img')
+            if (shipInCell.length > 0) {
+                shipInCell = [...shipInCell][0]
+                var ship = shipInCell.getAttribute('value').split("-");
+                const shipId = ship[1];
+                const shipName = ship[0];
+                const shipValue = CONSTANTS[`${getConstantsShip(shipName)}`].points;
+                setPoints(points + shipValue);
+                shipInCell.remove();
+                console.log({ shipValue });
+            }
         });
     }
     setCustomShipsWLocation(customShipsWLocation.map(obj => {
-        const shipKey = obj.ship.split("-")[0];
-        obj.moveCount = CONSTANTS[`${shipKey}Moves`];
+        var shipKey = obj.ship.split("-")[0];
+        shipKey = getConstantsShip(shipKey)
+        obj.moveCount = CONSTANTS[`${shipKey}`].moves;
         return obj;
     }));
     setFireLocations([]);
     setShowFireOptions(true);
+}
+
+const getConstantsShip = (ship) => {
+    if (ship === 'aircraft carrier') ship = "aircraftCarrier";
+    if (ship === 'cargo ship') ship = "cargoShip";
+    return ship;
 }

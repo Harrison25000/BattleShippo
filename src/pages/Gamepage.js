@@ -13,6 +13,7 @@ function Gamepage() {
 
     const [mission, setMission] = useState({});
     const [turnCount, setTurnCount] = useState(0);
+    const [points, setPoints] = useState(0);
     const [playerCount, setPlayerCount] = useState(0);
     const [missileCount, setMissileCount] = useState(3);
     const [ships, setShips] = useState({ battleship: 1, aircraftCarrier: 1, ferry: 1, rib: 1, submarine: 1, cargoShip: 1 });
@@ -54,6 +55,7 @@ function Gamepage() {
         const ship = shipArr[0];
         const shipId = shipArr[1];
         const moveCount = parseInt(e.target.getAttribute('moveCount'));
+        console.log({ moveCount })
         const origin = e.target.getAttribute('origin');
         const parentCell = e.target.parentNode;
         const coordinates = parentCell.getAttribute("title");
@@ -63,6 +65,7 @@ function Gamepage() {
         e.target.remove();
         removeShip({ x: origin.split(',')[0].trim(), y: origin.split(',')[1].trim() })
         placeShip({ ship, x: xAxis, y: yAxis, id: shipId })
+        console.log("here")
         await updateCustomShipsWLocation({ ship: shipArr.join("-"), x: xAxis, y: yAxis, countToDeduct: moveCount }).then(updatedCustomShipsWLocation => {
             setCustomShipsWLocation(updatedCustomShipsWLocation);
             countToDeduct = getCustomShipWLocation({ ship: shipArr.join("-"), customShipsWLocationArr: updatedCustomShipsWLocation }).moveCount
@@ -72,8 +75,8 @@ function Gamepage() {
     });
 
     const updateCustomShipsWLocation = async ({ ship, x, y, countToDeduct }) => {
-        console.log(customShipsWLocation)
         const customShipsWLocationArr = customShipsWLocation.map(obj => {
+            console.log(obj.ship, obj.moveCount)
             if (obj.ship === ship) {
                 return { ship, location: `${x}, ${y}`, moveCount: (obj.moveCount - countToDeduct) }
             }
@@ -118,6 +121,7 @@ function Gamepage() {
                     <div className='Flex-Row-Edges'>
                         <h5>Turn: {turnCount}</h5>
                         <h5>Players: {playerCount}</h5>
+                        <h5>Points: {points}</h5>
                         <img alt="ship info button" title='ship info' onClick={() => setShowShipInfo(!showShipInfo)} src={shipInfoImage} id="shipInfoImage" />
                     </div>
                     {showShipInfo && (
@@ -132,8 +136,8 @@ function Gamepage() {
                             <h5>Firing at: {fireLocations.map(coord => coord.join("")).join(", ")}</h5>
                         </div>
                     )}
-                    {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => endTurn({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission })}>End Turn</button>}
-                    {(turnCount === 0 || turnCount === 1) &&
+                    {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => endTurn({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points })}>End Turn</button>}
+                    {(turnCount < 2) &&
                         <div>
                             <button id='resetMapButton' onClick={() => { window.location.reload() }}>Reset Map</button>
                         </div>
