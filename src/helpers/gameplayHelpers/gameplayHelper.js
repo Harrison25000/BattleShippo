@@ -11,7 +11,7 @@ export const alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", 
 
 const landSea = ["lightblue", "green"];
 
-export const setupMap = () => {
+export const setupMap = async () => {
     for (var i = 0; i <= 26; i++) {
         if (i > 0) {
             $('#mapTable').append(
@@ -25,6 +25,35 @@ export const setupMap = () => {
         }
         $('#firstRow').append(`<th>${(i === 0) ? '-' : alphabet[i - 1]}</th > `);
 
+    }
+}
+
+export const saveMap = async ({ url }) => {
+    const map = document.getElementById("mapTable").outerHTML;
+    console.log({ map })
+    try {
+        await fetch(getBackendUrl() + 'savemap', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post: {
+                    url,
+                    map
+                }
+            })
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getBackendUrl = () => {
+    if (window.location.host.includes("localhost")) {
+        return "http://localhost:5000/";
+    } else {
+        return "https://battleshippo-backend.herokuapp.com/";
     }
 }
 
@@ -334,4 +363,24 @@ const getConstantsShip = (ship) => {
     if (ship === 'aircraft carrier') ship = "aircraftCarrier";
     if (ship === 'cargo ship') ship = "cargoShip";
     return ship;
+}
+
+export const getMap = async ({ url }) => {
+    try {
+        const response = await fetch(getBackendUrl() + 'connecttogame', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post: {
+                    url,
+                }
+            })
+        })
+        const body = await response.json();
+        return (body.map);
+    } catch (error) {
+        console.log(error);
+    }
 }

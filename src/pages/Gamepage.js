@@ -3,7 +3,7 @@ import { Ships } from '../components/Popups/Ships';
 import '../css/Gamepage.css';
 import '../css/Generics.css';
 import shipInfoImage from '../media/ShipInfo.png';
-import { getMission, setupMap, getCell, placeBoat, showMoveOptions, removeAllMoveDots, placeShip, alphabet, removeShip, endTurn } from '../helpers/gameplayHelpers/gameplayHelper';
+import { getMission, setupMap, getCell, placeBoat, showMoveOptions, removeAllMoveDots, placeShip, alphabet, removeShip, endTurn, saveMap, getMap } from '../helpers/gameplayHelpers/gameplayHelper';
 import target from '../media/Target.png';
 import { Fire } from '../components/Fire';
 import { FirstTurnPlaceShips } from '../components/FirstTurnPlaceShips';
@@ -23,9 +23,15 @@ function Gamepage() {
     const [connected, setConnected] = useState(false);
     const [showShipInfo, setShowShipInfo] = useState(false);
     const [showFireOptions, setShowFireOptions] = useState(true);
+    const url = window.location.pathname.split("/").pop();
 
     useEffect(() => {
-        setupMap();
+        if (sessionStorage.getItem('host') === "true") {
+            console.log("host")
+            setupMap().then(() => saveMap({ url }));
+        } else {
+            getMap({ url }).then(body => document.getElementsByClassName("Map")[0].insertAdjacentHTML('beforebegin', body));
+        }
     }, []);
 
     useEffect(() => {
