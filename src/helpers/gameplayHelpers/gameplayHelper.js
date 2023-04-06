@@ -359,6 +359,21 @@ export const endTurn = ({ turnCount, setTurnCount, customShipsWLocation, setCust
     setShowFireOptions(true);
 }
 
+export const pollEndTurn = async () => {
+    try {
+        const response = await fetch(getBackendUrl() + 'pollendturn', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const body = await response.json();
+        return ({ map: body.map, allPlayersEnded: body.allPlayersEnded });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 const getConstantsShip = (ship) => {
     if (ship === 'aircraft carrier') ship = "aircraftCarrier";
     if (ship === 'cargo ship') ship = "cargoShip";

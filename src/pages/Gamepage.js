@@ -23,6 +23,8 @@ function Gamepage() {
     const [connected, setConnected] = useState(false);
     const [showShipInfo, setShowShipInfo] = useState(false);
     const [showFireOptions, setShowFireOptions] = useState(true);
+    const [waitingForNextTurn, setWaitingForNextTurn] = useState(false);
+
     const url = window.location.pathname.split("/").pop();
 
     useEffect(() => {
@@ -30,9 +32,15 @@ function Gamepage() {
             console.log("host")
             setupMap().then(() => saveMap({ url }));
         } else {
-            getMap({ url }).then(body => document.getElementsByClassName("Map")[0].insertAdjacentHTML('beforebegin', body));
+            getMap({ url }).then(body => document.getElementsByClassName("Map")[0].insertAdjacentHTML('beforeend', body));
         }
     }, []);
+
+    useEffect(() => {
+        if (waitingForNextTurn) {
+
+        }
+    }, [waitingForNextTurn])
 
     useEffect(() => {
         console.log({ customShipsWLocation })
@@ -142,7 +150,11 @@ function Gamepage() {
                             <h5>Firing at: {fireLocations.map(coord => coord.join("")).join(", ")}</h5>
                         </div>
                     )}
-                    {firstTurnShipsPlaced && <button id="endTurnButton" onClick={() => endTurn({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points })}>End Turn</button>}
+                    {firstTurnShipsPlaced && !waitingForNextTurn && <button id="endTurnButton" onClick={() => {
+                        setWaitingForNextTurn(true);
+                        endTurn({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points })
+                    }
+                    }>End Turn</button>}
                     {(turnCount < 2) &&
                         <div>
                             <button id='resetMapButton' onClick={() => { window.location.reload() }}>Reset Map</button>
