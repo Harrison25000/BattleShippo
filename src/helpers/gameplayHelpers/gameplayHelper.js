@@ -329,7 +329,11 @@ const getAdjacentCells = ({ x, y }) => {
     return { rightCell, leftCell, aboveCell, aboveRightCell, aboveLeftCell, belowCell, belowRightCell, belowLeftCell };
 }
 
-export const endTurn = ({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points }) => {
+export const endTurn = async ({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, fireLocations, mission, setPoints, points, url, playerName, landToSeaCoord }) => {
+
+    // const shipCoordinates = req.body.post.shipCoordinates;
+    const map = document.getElementById("mapTable").outerHTML;
+    console.log({ url, playerName, customShipsWLocation, fireLocations, turnCount, map })
     setTurnCount(turnCount + 1);
     removeAllMoveDots();
     if (mission.targetCell) {
@@ -357,6 +361,27 @@ export const endTurn = ({ turnCount, setTurnCount, customShipsWLocation, setCust
     }));
     setFireLocations([]);
     setShowFireOptions(true);
+    const shipCoordinates = customShipsWLocation.map(ship => ship.location);
+    try {
+        await fetch(getBackendUrl() + 'endturn', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                post: {
+                    url,
+                    playerName,
+                    shipCoordinates,
+                    missileCoordinates: fireLocations,
+                    turnCount,
+                    landToSeaCoord
+                }
+            })
+        });
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 export const pollEndTurn = async () => {

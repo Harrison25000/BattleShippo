@@ -18,6 +18,8 @@ export const JoinGamePopup = ({ setShowJoinGamePopup }) => {
         setShowJoinGamePopup(false);
         sessionStorage.setItem('host', false);
         sessionStorage.setItem('joiner', true);
+        sessionStorage.setItem('playerName', playerName);
+        sessionStorage.setItem('url', url);
         window.location.href = `game/${url}`;
     }
 

@@ -25,7 +25,9 @@ function Gamepage() {
     const [showFireOptions, setShowFireOptions] = useState(true);
     const [waitingForNextTurn, setWaitingForNextTurn] = useState(false);
 
+    const playerName = sessionStorage.getItem('playerName');
     const url = window.location.pathname.split("/").pop();
+    sessionStorage.setItem('url', url);
 
     useEffect(() => {
         if (sessionStorage.getItem('host') === "true") {
@@ -43,7 +45,6 @@ function Gamepage() {
     }, [waitingForNextTurn])
 
     useEffect(() => {
-        console.log({ customShipsWLocation })
     }, [customShipsWLocation])
 
     useEffect(() => {
@@ -152,7 +153,7 @@ function Gamepage() {
                     )}
                     {firstTurnShipsPlaced && !waitingForNextTurn && <button id="endTurnButton" onClick={() => {
                         setWaitingForNextTurn(true);
-                        endTurn({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points })
+                        endTurn({ turnCount, setTurnCount, customShipsWLocation, setCustomShipsWLocation, setShowFireOptions, setFireLocations, mission, setPoints, points, url, playerName })
                     }
                     }>End Turn</button>}
                     {(turnCount < 2) &&

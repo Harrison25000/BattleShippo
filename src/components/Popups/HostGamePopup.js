@@ -24,6 +24,8 @@ export const HostGamePopup = ({ setShowHostGamePopup }) => {
         setShowHostGamePopup(false);
         sessionStorage.setItem('host', true);
         sessionStorage.setItem('joiner', false);
+        sessionStorage.setItem('playerName', playerName);
+        sessionStorage.setItem('url', url);
         window.location.href = `game/${url}`;
     }
 
